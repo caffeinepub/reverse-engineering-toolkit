@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* JetBrains Mono - monospace for code */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/JetBrainsMono[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist - UI font */
+@font-face {
+  font-family: "Geist";
+  src: url("/assets/fonts/Geist[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.25rem;
+
+    /* RE Toolkit dark terminal theme */
+    --background: 0.12 0.01 220;
+    --foreground: 0.88 0.05 145;
+
+    --card: 0.14 0.015 220;
+    --card-foreground: 0.88 0.05 145;
+
+    --popover: 0.16 0.015 220;
+    --popover-foreground: 0.88 0.05 145;
+
+    /* Phosphor green primary */
+    --primary: 0.78 0.2 145;
+    --primary-foreground: 0.08 0.01 220;
+
+    --secondary: 0.18 0.02 220;
+    --secondary-foreground: 0.72 0.08 145;
+
+    --muted: 0.16 0.015 220;
+    --muted-foreground: 0.5 0.04 200;
+
+    /* Cyan accent */
+    --accent: 0.7 0.18 200;
+    --accent-foreground: 0.08 0.01 220;
+
+    --destructive: 0.62 0.22 25;
+    --destructive-foreground: 0.95 0 0;
+
+    --border: 0.25 0.03 200;
+    --input: 0.2 0.02 210;
+    --ring: 0.78 0.2 145;
+
+    /* Chart colors */
+    --chart-1: 0.78 0.2 145;
+    --chart-2: 0.7 0.18 200;
+    --chart-3: 0.72 0.18 40;
+    --chart-4: 0.65 0.2 300;
+    --chart-5: 0.62 0.22 25;
+
+    /* Sidebar */
+    --sidebar: 0.1 0.01 220;
+    --sidebar-foreground: 0.88 0.05 145;
+    --sidebar-primary: 0.78 0.2 145;
+    --sidebar-primary-foreground: 0.08 0.01 220;
+    --sidebar-accent: 0.18 0.02 220;
+    --sidebar-accent-foreground: 0.78 0.2 145;
+    --sidebar-border: 0.22 0.03 200;
+    --sidebar-ring: 0.78 0.2 145;
+
+    /* Custom RE Toolkit tokens */
+    --terminal-green: 0.78 0.2 145;
+    --terminal-cyan: 0.7 0.18 200;
+    --terminal-amber: 0.72 0.18 60;
+    --terminal-red: 0.62 0.22 25;
+    --terminal-dim: 0.35 0.04 200;
+    --terminal-bg: 0.08 0.01 220;
+    --glow-green: 0px 0px 12px oklch(0.78 0.2 145 / 0.4);
+    --glow-cyan: 0px 0px 12px oklch(0.7 0.18 200 / 0.4);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "liga" 1, "calt" 1;
+  }
+
+  /* Scanline texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      oklch(0 0 0 / 0.03) 2px,
+      oklch(0 0 0 / 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(var(--border));
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(var(--terminal-green));
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: "JetBrains Mono", "Courier New", monospace;
+  }
+
+  .text-terminal-green {
+    color: oklch(var(--terminal-green));
+  }
+
+  .text-terminal-cyan {
+    color: oklch(var(--terminal-cyan));
+  }
+
+  .text-terminal-amber {
+    color: oklch(var(--terminal-amber));
+  }
+
+  .text-terminal-red {
+    color: oklch(var(--terminal-red));
+  }
+
+  .text-terminal-dim {
+    color: oklch(var(--terminal-dim));
+  }
+
+  .glow-green {
+    box-shadow: var(--glow-green);
+  }
+
+  .glow-cyan {
+    box-shadow: var(--glow-cyan);
+  }
+
+  .border-terminal-green {
+    border-color: oklch(var(--terminal-green));
+  }
+
+  .border-terminal-cyan {
+    border-color: oklch(var(--terminal-cyan));
+  }
+
+  .bg-terminal-bg {
+    background-color: oklch(var(--terminal-bg));
+  }
+
+  .hex-table {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+}
