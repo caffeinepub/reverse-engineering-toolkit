@@ -1,13 +1,21 @@
 import { cn } from "@/lib/utils";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
+  BarChart2,
   BinaryIcon,
   ChevronLeft,
   ChevronRight,
   Code2,
+  Edit3,
   FileSearch,
+  GitCompare,
+  Hash,
   LayoutDashboard,
+  Package,
   ScanSearch,
+  Shield,
+  Shuffle,
+  Table2,
   Terminal,
   Type,
 } from "lucide-react";
@@ -20,6 +28,14 @@ const navItems = [
   { path: "/disassembler", label: "Disassembler", icon: Code2 },
   { path: "/header-inspector", label: "Header Inspector", icon: FileSearch },
   { path: "/pattern-scanner", label: "Pattern Scanner", icon: ScanSearch },
+  { path: "/checksums", label: "Checksums", icon: Hash },
+  { path: "/deobfuscator", label: "Deobfuscator", icon: Shuffle },
+  { path: "/file-diff", label: "File Diff", icon: GitCompare },
+  { path: "/yara-rule", label: "YARA Builder", icon: Shield },
+  { path: "/hex-editor", label: "Hex Editor", icon: Edit3 },
+  { path: "/entropy-heatmap", label: "Entropy Heatmap", icon: BarChart2 },
+  { path: "/import-table", label: "Import Table", icon: Table2 },
+  { path: "/pe-resources", label: "PE Resources", icon: Package },
 ];
 
 function Sidebar({
@@ -144,7 +160,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </span>
           </div>
           <div className="flex-1" />
-          <div className="font-mono text-xs text-muted-foreground">v1.0.0</div>
+          <div className="font-mono text-xs text-muted-foreground">v3.0.0</div>
           <div
             className="w-2 h-2 rounded-full bg-terminal-green animate-pulse"
             title="Online"

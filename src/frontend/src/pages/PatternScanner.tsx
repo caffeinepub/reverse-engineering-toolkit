@@ -5,7 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateSession } from "@/hooks/useQueries";
 import { cn } from "@/lib/utils";
-import { AlertCircle, ScanSearch, Search, Upload } from "lucide-react";
+import {
+  AlertCircle,
+  Download,
+  ScanSearch,
+  Search,
+  Upload,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -81,6 +87,35 @@ export function PatternScanner() {
     setFilename(file.name);
     setResults(null);
     toast.success(`Loaded: ${file.name}`);
+  };
+
+  const handleExport = (format: "json" | "csv") => {
+    if (!results) return;
+    if (format === "json") {
+      const data = { filename, pattern, matches: results };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename || "scan"}.matches.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const rows = ["Offset Hex,Offset Dec,Context"];
+      for (const r of results) {
+        rows.push(`${r.offsetHex},${r.offsetDec},"${r.context}"`);
+      }
+      const blob = new Blob([rows.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename || "scan"}.matches.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    toast.success(`Exported as ${format.toUpperCase()}`);
   };
 
   const handleScan = async () => {
@@ -249,22 +284,48 @@ export function PatternScanner() {
       {results !== null && (
         <Card className="border-border bg-card/60">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <CardTitle className="font-mono text-sm text-terminal-cyan flex items-center gap-2">
                 <ScanSearch className="w-4 h-4" />
                 Scan Results
               </CardTitle>
-              <Badge
-                variant="outline"
-                className={cn(
-                  "font-mono text-xs",
-                  results.length > 0
-                    ? "text-terminal-green border-terminal-green/30"
-                    : "text-muted-foreground border-border",
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "font-mono text-xs",
+                    results.length > 0
+                      ? "text-terminal-green border-terminal-green/30"
+                      : "text-muted-foreground border-border",
+                  )}
+                >
+                  {results.length} match{results.length !== 1 ? "es" : ""}
+                </Badge>
+                {results.length > 0 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      data-ocid="scanner.export_json.button"
+                      onClick={() => handleExport("json")}
+                      className="font-mono text-xs border-terminal-cyan/40 text-terminal-cyan hover:bg-terminal-cyan/10 gap-1.5 h-7"
+                    >
+                      <Download className="w-3 h-3" />
+                      JSON
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      data-ocid="scanner.export_csv.button"
+                      onClick={() => handleExport("csv")}
+                      className="font-mono text-xs border-terminal-amber/40 text-terminal-amber hover:bg-terminal-amber/10 gap-1.5 h-7"
+                    >
+                      <Download className="w-3 h-3" />
+                      CSV
+                    </Button>
+                  </>
                 )}
-              >
-                {results.length} match{results.length !== 1 ? "es" : ""}
-              </Badge>
+              </div>
             </div>
           </CardHeader>
           <CardContent>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCreateSession } from "@/hooks/useQueries";
 import { cn } from "@/lib/utils";
-import { AlertCircle, BinaryIcon, Upload } from "lucide-react";
+import { AlertCircle, BinaryIcon, Download, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -76,6 +76,42 @@ export function BinaryAnalyzer() {
   const [isLoading, setIsLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const createSession = useCreateSession();
+
+  const handleExport = (format: "json" | "csv") => {
+    if (!analysis) return;
+    if (format === "json") {
+      const data = {
+        filename: analysis.name,
+        size: analysis.size,
+        type: analysis.type,
+        magicBytes: analysis.magicBytes,
+        entropy: analysis.entropy,
+        hexDump: analysis.hexDump,
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${analysis.name}.hexdump.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const rows = ["Address,Hex,ASCII"];
+      for (const row of analysis.hexDump) {
+        rows.push(`${row.address},"${row.hex.join(" ")}","${row.ascii}"`);
+      }
+      const blob = new Blob([rows.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${analysis.name}.hexdump.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    toast.success(`Exported as ${format.toUpperCase()}`);
+  };
 
   const analyzeFile = async (file: File) => {
     setIsLoading(true);
@@ -236,21 +272,43 @@ export function BinaryAnalyzer() {
             className="border-border bg-card/60"
           >
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <CardTitle className="font-mono text-sm text-terminal-cyan">
                   Hex Dump
                 </CardTitle>
-                <Badge
-                  variant="outline"
-                  className="font-mono text-xs text-muted-foreground border-border"
-                >
-                  First{" "}
-                  {Math.min(
-                    analysis.hexDump.length * 16,
-                    analysis.size,
-                  ).toLocaleString()}{" "}
-                  bytes
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-xs text-muted-foreground border-border"
+                  >
+                    First{" "}
+                    {Math.min(
+                      analysis.hexDump.length * 16,
+                      analysis.size,
+                    ).toLocaleString()}{" "}
+                    bytes
+                  </Badge>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    data-ocid="binary.export_json.button"
+                    onClick={() => handleExport("json")}
+                    className="font-mono text-xs border-terminal-cyan/40 text-terminal-cyan hover:bg-terminal-cyan/10 gap-1.5 h-7"
+                  >
+                    <Download className="w-3 h-3" />
+                    JSON
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    data-ocid="binary.export_csv.button"
+                    onClick={() => handleExport("csv")}
+                    className="font-mono text-xs border-terminal-amber/40 text-terminal-amber hover:bg-terminal-amber/10 gap-1.5 h-7"
+                  >
+                    <Download className="w-3 h-3" />
+                    CSV
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>

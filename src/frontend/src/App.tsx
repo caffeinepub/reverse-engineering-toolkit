@@ -1,11 +1,19 @@
 import { Layout } from "@/components/Layout";
 import { Toaster } from "@/components/ui/sonner";
 import { BinaryAnalyzer } from "@/pages/BinaryAnalyzer";
+import { Checksums } from "@/pages/Checksums";
 import { Dashboard } from "@/pages/Dashboard";
+import { Deobfuscator } from "@/pages/Deobfuscator";
 import { Disassembler } from "@/pages/Disassembler";
+import { EntropyHeatmap } from "@/pages/EntropyHeatmap";
+import { FileDiff } from "@/pages/FileDiff";
 import { HeaderInspector } from "@/pages/HeaderInspector";
+import { HexEditor } from "@/pages/HexEditor";
+import { ImportTableAnalyzer } from "@/pages/ImportTableAnalyzer";
+import { PEResourceExtractor } from "@/pages/PEResourceExtractor";
 import { PatternScanner } from "@/pages/PatternScanner";
 import { StringExtractor } from "@/pages/StringExtractor";
+import { YaraRuleBuilder } from "@/pages/YaraRuleBuilder";
 import {
   Outlet,
   RouterProvider,
@@ -72,6 +80,54 @@ const patternScannerRoute = createRoute({
   component: PatternScanner,
 });
 
+const checksumsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/checksums",
+  component: Checksums,
+});
+
+const deobfuscatorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/deobfuscator",
+  component: Deobfuscator,
+});
+
+const fileDiffRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/file-diff",
+  component: FileDiff,
+});
+
+const yaraRuleRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/yara-rule",
+  component: YaraRuleBuilder,
+});
+
+const hexEditorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/hex-editor",
+  component: HexEditor,
+});
+
+const entropyHeatmapRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/entropy-heatmap",
+  component: EntropyHeatmap,
+});
+
+const importTableRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/import-table",
+  component: ImportTableAnalyzer,
+});
+
+const peResourcesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/pe-resources",
+  component: PEResourceExtractor,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   binaryAnalyzerRoute,
@@ -79,6 +135,14 @@ const routeTree = rootRoute.addChildren([
   disassemblerRoute,
   headerInspectorRoute,
   patternScannerRoute,
+  checksumsRoute,
+  deobfuscatorRoute,
+  fileDiffRoute,
+  yaraRuleRoute,
+  hexEditorRoute,
+  entropyHeatmapRoute,
+  importTableRoute,
+  peResourcesRoute,
 ]);
 
 const router = createRouter({ routeTree });

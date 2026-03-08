@@ -12,6 +12,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 
 export interface AnalysisSession {
   'id' : bigint,
+  'note' : string,
   'tool' : string,
   'filename' : string,
   'timestamp' : bigint,
@@ -22,6 +23,7 @@ export interface _SERVICE {
   'createSession' : ActorMethod<[string, string, string], bigint>,
   'deleteSession' : ActorMethod<[bigint], boolean>,
   'getSessions' : ActorMethod<[], Array<AnalysisSession>>,
+  'updateSessionNote' : ActorMethod<[bigint, string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

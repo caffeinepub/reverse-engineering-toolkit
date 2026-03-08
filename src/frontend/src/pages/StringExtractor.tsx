@@ -14,7 +14,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateSession } from "@/hooks/useQueries";
 import { cn } from "@/lib/utils";
-import { Check, Copy, Search, Type, Upload } from "lucide-react";
+import { Check, Copy, Download, Search, Type, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -118,6 +118,34 @@ export function StringExtractor() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast.success("Copied to clipboard");
+  };
+
+  const handleExport = (format: "json" | "csv") => {
+    if (format === "json") {
+      const data = { filename: filename || "pasted-text", strings: results };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename || "strings"}.strings.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const rows = ["Offset,String"];
+      for (const r of results) {
+        rows.push(`${r.offset},"${r.value.replace(/"/g, '""')}"`);
+      }
+      const blob = new Blob([rows.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename || "strings"}.strings.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    toast.success(`Exported as ${format.toUpperCase()}`);
   };
 
   return (
@@ -288,16 +316,38 @@ export function StringExtractor() {
       {results.length > 0 && (
         <Card className="border-border bg-card/60">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <CardTitle className="font-mono text-sm text-terminal-cyan">
                 Extracted Strings
               </CardTitle>
-              <Badge
-                variant="outline"
-                className="font-mono text-xs text-muted-foreground border-border"
-              >
-                {results.length.toLocaleString()} results
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className="font-mono text-xs text-muted-foreground border-border"
+                >
+                  {results.length.toLocaleString()} results
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  data-ocid="strings.export_json.button"
+                  onClick={() => handleExport("json")}
+                  className="font-mono text-xs border-terminal-cyan/40 text-terminal-cyan hover:bg-terminal-cyan/10 gap-1.5 h-7"
+                >
+                  <Download className="w-3 h-3" />
+                  JSON
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  data-ocid="strings.export_csv.button"
+                  onClick={() => handleExport("csv")}
+                  className="font-mono text-xs border-terminal-amber/40 text-terminal-amber hover:bg-terminal-amber/10 gap-1.5 h-7"
+                >
+                  <Download className="w-3 h-3" />
+                  CSV
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent>

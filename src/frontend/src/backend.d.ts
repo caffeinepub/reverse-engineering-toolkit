@@ -9,6 +9,7 @@ export interface None {
 export type Option<T> = Some<T> | None;
 export interface AnalysisSession {
     id: bigint;
+    note: string;
     tool: string;
     filename: string;
     timestamp: bigint;
@@ -19,4 +20,5 @@ export interface backendInterface {
     createSession(filename: string, tool: string, resultSummary: string): Promise<bigint>;
     deleteSession(id: bigint): Promise<boolean>;
     getSessions(): Promise<Array<AnalysisSession>>;
+    updateSessionNote(id: bigint, note: string): Promise<boolean>;
 }

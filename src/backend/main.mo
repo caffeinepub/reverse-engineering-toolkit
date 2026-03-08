@@ -1,9 +1,9 @@
 import Int "mo:core/Int";
 import Map "mo:core/Map";
-import Text "mo:core/Text";
 import Time "mo:core/Time";
 import Array "mo:core/Array";
-import Runtime "mo:core/Runtime";
+
+
 
 actor {
   type AnalysisSession = {
@@ -12,6 +12,7 @@ actor {
     tool : Text;
     timestamp : Int;
     resultSummary : Text;
+    note : Text;
   };
 
   var nextId = 0;
@@ -25,6 +26,7 @@ actor {
       tool;
       timestamp = Time.now();
       resultSummary;
+      note = "";
     };
     sessions.add(id, session);
     nextId += 1;
@@ -36,15 +38,29 @@ actor {
   };
 
   public shared ({ caller }) func deleteSession(id : Nat) : async Bool {
-    if (sessions.containsKey(id)) {
-      sessions.remove(id);
-      true;
-    } else {
-      Runtime.trap("Session does not exist");
+    switch (sessions.get(id)) {
+      case (?_) {
+        sessions.remove(id);
+        true;
+      };
+      case (null) { false };
     };
   };
 
   public shared ({ caller }) func clearAllSessions() : async () {
     sessions.clear();
+  };
+
+  public shared ({ caller }) func updateSessionNote(id : Nat, note : Text) : async Bool {
+    switch (sessions.get(id)) {
+      case (?session) {
+        let updatedSession = {
+          session with note;
+        };
+        sessions.add(id, updatedSession);
+        true;
+      };
+      case (null) { false };
+    };
   };
 };

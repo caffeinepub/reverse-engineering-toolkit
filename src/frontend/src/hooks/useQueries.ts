@@ -65,3 +65,17 @@ export function useClearAllSessions() {
     },
   });
 }
+
+export function useUpdateSessionNote() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, note }: { id: bigint; note: string }) => {
+      if (!actor) throw new Error("No actor");
+      return actor.updateSessionNote(id, note);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+    },
+  });
+}

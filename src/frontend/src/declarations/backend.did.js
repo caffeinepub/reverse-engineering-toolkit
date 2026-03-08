@@ -10,6 +10,7 @@ import { IDL } from '@icp-sdk/core/candid';
 
 export const AnalysisSession = IDL.Record({
   'id' : IDL.Nat,
+  'note' : IDL.Text,
   'tool' : IDL.Text,
   'filename' : IDL.Text,
   'timestamp' : IDL.Int,
@@ -21,6 +22,7 @@ export const idlService = IDL.Service({
   'createSession' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
   'deleteSession' : IDL.Func([IDL.Nat], [IDL.Bool], []),
   'getSessions' : IDL.Func([], [IDL.Vec(AnalysisSession)], ['query']),
+  'updateSessionNote' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
@@ -28,6 +30,7 @@ export const idlInitArgs = [];
 export const idlFactory = ({ IDL }) => {
   const AnalysisSession = IDL.Record({
     'id' : IDL.Nat,
+    'note' : IDL.Text,
     'tool' : IDL.Text,
     'filename' : IDL.Text,
     'timestamp' : IDL.Int,
@@ -39,6 +42,7 @@ export const idlFactory = ({ IDL }) => {
     'createSession' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
     'deleteSession' : IDL.Func([IDL.Nat], [IDL.Bool], []),
     'getSessions' : IDL.Func([], [IDL.Vec(AnalysisSession)], ['query']),
+    'updateSessionNote' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Bool], []),
   });
 };
 
